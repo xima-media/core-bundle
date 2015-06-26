@@ -1,0 +1,32 @@
+{
+    "name" : "xima-media/core-bundle",
+    "description" : "The Xima Core Bundle",
+    "type" : "symfony-bundle",
+    "authors" : [{
+            "name" : "Wolfram Eberius",
+            "email" : "woe@xima.de"
+        },
+        {
+            "name" : "Matt Drollette",
+            "email" : "matt@drollette.com"
+        }],
+    "keywords" : [
+        "symfony eventlistener"
+    ],
+    "license" : [
+        "MIT"
+    ],
+    "require": {
+        "php": ">=5.3.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "Xima\\CoreBundle\\": ""
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "v0.0.2"
+        }
+    }
+}

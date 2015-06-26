@@ -1,0 +1,5 @@
+services:
+    xima.zip_code_orbiting_search:
+        class: Xima\CoreBundle\Service\OGDBWrapper
+        calls:
+          - [ setContainer,[ @service_container ] ]
