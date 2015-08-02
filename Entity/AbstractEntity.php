@@ -17,6 +17,15 @@ abstract class AbstractEntity
     use ORMBehaviors\SoftDeletable\SoftDeletable;
     
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    protected $id;
+    
+    /**
      * @var boolean
      *
      * @ORM\Column(name="is_active", type="boolean", nullable=true)
@@ -35,6 +44,16 @@ abstract class AbstractEntity
         $this->id = $id;
 
         return $this;
+    }
+    
+    /**
+     * Get id
+     *
+     * @return int
+     */
+    public function getId()
+    {
+    	return $this->id;
     }
     
     /**
