@@ -1,9 +1,9 @@
 <?php
+
 namespace Xima\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\Entity
@@ -52,6 +52,7 @@ class CronTask
     public function setName($name)
     {
         $this->name = $name;
+
         return $this;
     }
 
@@ -63,6 +64,7 @@ class CronTask
     public function setCommands($commands)
     {
         $this->commands = $commands;
+
         return $this;
     }
 
@@ -74,6 +76,7 @@ class CronTask
     public function setInterval($interval)
     {
         $this->interval = $interval;
+
         return $this;
     }
 
@@ -85,6 +88,7 @@ class CronTask
     public function setLastRun($lastrun)
     {
         $this->lastrun = $lastrun;
+
         return $this;
     }
 }

@@ -11,7 +11,6 @@ use Xima\CoreBundle\Model\InitializableControllerInterface;
  */
 class BeforeControllerListener
 {
-
     protected $security_context;
 
     public function __construct(SecurityContextInterface $security_context)

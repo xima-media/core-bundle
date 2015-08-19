@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping\MappedSuperclass;
 use Knp\DoctrineBehaviors\Model as ORMBehaviors;
 
 /**
- * Entity
+ * Entity.
  *
  * @MappedSuperclass
  */
@@ -15,28 +15,28 @@ abstract class AbstractEntity
 {
     use ORMBehaviors\Timestampable\Timestampable;
     use ORMBehaviors\SoftDeletable\SoftDeletable;
-    
+
     /**
-     * @var integer
+     * @var int
      *
      * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     protected $id;
-    
+
     /**
-     * @var boolean
+     * @var bool
      *
      * @ORM\Column(name="is_active", type="boolean", nullable=true)
      */
     protected $isActive = true;
 
-    
     /**
-     * Set id
+     * Set id.
      *
      * @param int $id
+     *
      * @return Entity
      */
     public function setId($id)
@@ -45,21 +45,22 @@ abstract class AbstractEntity
 
         return $this;
     }
-    
+
     /**
-     * Get id
+     * Get id.
      *
      * @return int
      */
     public function getId()
     {
-    	return $this->id;
+        return $this->id;
     }
-    
+
     /**
-     * Set isActive
+     * Set isActive.
      *
-     * @param boolean $isActive
+     * @param bool $isActive
+     *
      * @return Entity
      */
     public function setIsActive($isActive)
@@ -70,9 +71,9 @@ abstract class AbstractEntity
     }
 
     /**
-     * Get isActive
+     * Get isActive.
      *
-     * @return boolean 
+     * @return bool
      */
     public function getIsActive()
     {

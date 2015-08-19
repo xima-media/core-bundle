@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This file is part of the Sonata package.
  *
@@ -8,20 +9,15 @@
  * file that was distributed with this source code.
  */
 
-
 namespace Xima\CoreBundle\Form\Type;
 
-use Symfony\Component\Form\Extension\Core\DataTransformer\DateTimeToStringTransformer;
-use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-
 /**
- * Class DatePickerType
+ * Class DatePickerType.
  *
- * @package Sonata\CoreBundle\Form\Type
  *
  * @author Hussein Jafferjee <hussein@jafferjee.ca>
  */
@@ -35,8 +31,8 @@ class DatePickerType extends \Sonata\CoreBundle\Form\Type\BasePickerType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array_merge($this->getCommonDefaults(), array(
-            'date_format'    => $this->getDefaultFormat(),
-            'dp_pick_time'   => false,
+            'date_format' => $this->getDefaultFormat(),
+            'dp_pick_time' => false,
         )));
     }
 

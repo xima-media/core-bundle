@@ -1,4 +1,5 @@
 <?php
+
 namespace Xima\CoreBundle\Command;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
@@ -20,7 +21,7 @@ class CronTasksRunCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $output->writeln('<comment>'.date("Y-m-d H:i:s").': Running Cron Tasks...</comment>');
+        $output->writeln('<comment>'.date('Y-m-d H:i:s').': Running Cron Tasks...</comment>');
 
         $this->output = $output;
         $em = $this->getContainer()->get('doctrine.orm.entity_manager');
@@ -65,7 +66,7 @@ class CronTasksRunCommand extends ContainerAwareCommand
         // Flush database changes
         $em->flush();
 
-        $output->writeln('<comment>'.date("Y-m-d H:i:s").': Done!</comment>');
+        $output->writeln('<comment>'.date('Y-m-d H:i:s').': Done!</comment>');
     }
 
     private function runCommand($string)

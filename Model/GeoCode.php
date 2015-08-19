@@ -1,17 +1,18 @@
 <?php
+
 namespace Xima\CoreBundle\Model;
 
-class GeoCode 
+class GeoCode
 {
     protected $latitude;
-    
+
     protected $longitude;
-    
+
     protected $formattedAddress;
-    
+
     /**
      * Returns whether the geo code has latitude and longitude.
-     * 
+     *
      * @return bool
      */
     public function isValid()
@@ -19,37 +20,39 @@ class GeoCode
         return ($this->latitude && $this->longitude);
     }
 
-    public function getLatitude() {
-
+    public function getLatitude()
+    {
         return $this->latitude;
     }
 
-    public function setLatitude($latitude) {
-
+    public function setLatitude($latitude)
+    {
         $this->latitude = $latitude;
+
         return $this;
     }
 
-    public function getLongitude() {
-
+    public function getLongitude()
+    {
         return $this->longitude;
     }
 
-    public function setLongitude($longitude) {
-
+    public function setLongitude($longitude)
+    {
         $this->longitude = $longitude;
+
         return $this;
     }
 
-    public function getFormattedAddress() {
-
+    public function getFormattedAddress()
+    {
         return $this->formattedAddress;
     }
 
-    public function setFormattedAddress($formattedAddress) {
-
+    public function setFormattedAddress($formattedAddress)
+    {
         $this->formattedAddress = $formattedAddress;
+
         return $this;
     }
- 
 }

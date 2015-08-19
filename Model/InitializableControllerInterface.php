@@ -1,4 +1,5 @@
 <?php
+
 namespace Xima\CoreBundle\Model;
 
 use Symfony\Component\HttpFoundation\Request;
@@ -8,4 +9,3 @@ interface InitializableControllerInterface
 {
     public function initialize(Request $request, SecurityContextInterface $security_context);
 }
-?>
