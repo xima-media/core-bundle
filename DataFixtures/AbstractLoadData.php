@@ -6,8 +6,10 @@ use Doctrine\Common\DataFixtures\AbstractFixture;
 use Xima\CoreBundle\Entity\AbstractEntity;
 use Doctrine\Common\Persistence\ObjectManager;
 
-abstract class AbstractLoadData extends AbstractFixture
+abstract class AbstractLoadData extends AbstractFixture implements ContainerAwareInterface
 {
+    protected $container;
+
     public function loadEntity(AbstractEntity $entity, ObjectManager $manager)
     {
         if ($entity->getId()) {
@@ -22,5 +24,10 @@ abstract class AbstractLoadData extends AbstractFixture
         }
 
         $this->addReference(get_class($entity).$entity->getId(), $entity);
+    }
+
+    public function setContainer(ContainerInterface $container = null)
+    {
+        $this->container = $container;
     }
 }
