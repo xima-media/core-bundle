@@ -3,6 +3,8 @@
 namespace Xima\CoreBundle\DataFixtures;
 
 use Doctrine\Common\DataFixtures\AbstractFixture;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Xima\CoreBundle\Entity\AbstractEntity;
 use Doctrine\Common\Persistence\ObjectManager;
 
