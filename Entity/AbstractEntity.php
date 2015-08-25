@@ -5,6 +5,7 @@ namespace Xima\CoreBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\MappedSuperclass;
 use Knp\DoctrineBehaviors\Model as ORMBehaviors;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * Entity.
@@ -31,6 +32,14 @@ abstract class AbstractEntity
      * @ORM\Column(name="is_active", type="boolean", nullable=true)
      */
     protected $isActive = true;
+
+    /**
+     * @var int
+     *
+     * @Gedmo\SortablePosition
+     * @ORM\Column(name="position", type="integer")
+     */
+    private $position;
 
     /**
      * Set id.
@@ -78,5 +87,29 @@ abstract class AbstractEntity
     public function getIsActive()
     {
         return $this->isActive;
+    }
+
+    /**
+     * Set position.
+     *
+     * @param int $position
+     *
+     * @return Entity
+     */
+    public function setPosition($position)
+    {
+        $this->position = $position;
+
+        return $this;
+    }
+
+    /**
+     * Get position.
+     *
+     * @return int
+     */
+    public function getPosition()
+    {
+        return $this->position;
     }
 }

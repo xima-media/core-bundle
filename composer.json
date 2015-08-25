@@ -17,7 +17,8 @@
         "MIT"
     ],
     "require": {
-        "php": ">=5.3.3"
+        "php": ">=5.3.3",
+        "stof/doctrine-extensions-bundle": "^1.2.1"
     },
     "autoload": {
         "psr-4": {
