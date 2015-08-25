@@ -37,9 +37,9 @@ abstract class AbstractEntity
      * @var int
      *
      * @Gedmo\SortablePosition
-     * @ORM\Column(name="position", type="integer")
+     * @ORM\Column(name="position", type="integer", nullable=true)
      */
-    private $position;
+    protected $position;
 
     /**
      * Set id.
