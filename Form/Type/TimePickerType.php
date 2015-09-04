@@ -60,6 +60,7 @@ class TimePickerType extends \Sonata\CoreBundle\Form\Type\BasePickerType
 
         // we override format so BasePickerType properly formats the time
         $options['format'] = $format;
+        $options['dp_format'] = $format;
 
         parent::finishView($view, $form, $options);
     }
