@@ -12,6 +12,8 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class ExportEntitiesCommand extends ContainerAwareCommand
 {
+    const EXPORT_FOLDER = 'export';
+
     protected function configure()
     {
         $this
@@ -42,19 +44,20 @@ class ExportEntitiesCommand extends ContainerAwareCommand
         }
         // configuration and setup
         $fs = new Filesystem();
-        $entityName = $em->getClassMetadata($entity)->getTableName();
+        $reflection = $em->getClassMetadata($entity)->getReflectionClass();
+        /* @var $reflection \ReflectionClass */
 
         $serializer = SerializerBuilder::create()
             ->setPropertyNamingStrategy(new IdenticalPropertyNamingStrategy())
             ->build();
 
         // export directory
-        $dir = $this->getContainer()->get('kernel')->getRootDir().'/export/'.$entityName;
+        $dir = $this->getContainer()->get('kernel')->getRootDir().'/'.self::EXPORT_FOLDER.'/'.str_replace('\\', '/', $reflection->getName());
         if (!$fs->exists($dir)) {
             $fs->mkdir($dir);
         }
 
-        $fileName = $entityName.'.json';
+        $fileName = $reflection->getShortName().'.json';
         $file = $dir.'/'.$fileName;
         $tmpFile = $dir.'/_'.$fileName;
 
@@ -78,18 +81,20 @@ class ExportEntitiesCommand extends ContainerAwareCommand
         $jsonData = json_encode($data);
 
         $count = count($result);
+        $countTotal=$count+$offset;
+
         if ($count == $limit) {
             //still more in the db
             $fs->dumpFile($tmpFile, $jsonData);
-            $fs->dumpFile($offsetFile, $limit+$offset);
-            $output->writeln('<comment>Good</comment> -exported '.$count. ' entities of type \''.$entityName.'\' - waiting for more.');
+            $fs->dumpFile($offsetFile, $countTotal);
+            $output->writeln('<comment>Good</comment> - exported '.$count. ' entities of type \''.$reflection->getName().'\' - now having '.$countTotal.', waiting for more.');
         } else {
             //export completed
             $fs->dumpFile($file, $jsonData);
             $fs->remove($offsetFile);
             $fs->remove($tmpFile);
-            $count=$count+$offset;
-            $output->writeln('<info>Done</info> - exported all '.$count.' entities of type \''.$entityName.'\'');
+
+            $output->writeln('<info>Done</info> - exported all '.$count.' entities of type \''.$reflection->getName().'\'.');
         }
     }
 }
