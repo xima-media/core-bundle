@@ -1,0 +1,25 @@
+div.connection {
+    height:250px;
+}
+
+div.connection form .form-actions {
+    margin-top: 15px;
+}
+
+div.info {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+div.filter_container button[type=submit] {
+    margin-bottom: 15px;
+}
+
+.skin-black .sidebar span {
+    color: #eee;
+}
+
+#version {
+    padding-top: 5px;
+    opacity: 0.6;
+}
