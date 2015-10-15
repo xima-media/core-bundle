@@ -16,16 +16,30 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Sonata\CoreBundle\Date\MomentFormatConverter;
 
 /**
  * Class DatePickerType.
- *
  *
  * @author Hussein Jafferjee <hussein@jafferjee.ca>
  */
 class TimePickerType extends \Sonata\CoreBundle\Form\Type\BasePickerType
 {
     const FORMAT = 'H:i';
+
+    /**
+     * @var MomentFormatConverter
+     */
+    private $formatConverter;
+
+    /**
+     * @param MomentFormatConverter $formatConverter
+     */
+    public function __construct(MomentFormatConverter $formatConverter)
+    {
+        $this->formatConverter = $formatConverter;
+        parent::__construct($formatConverter);
+    }
 
     /**
      * {@inheritdoc}
@@ -60,6 +74,8 @@ class TimePickerType extends \Sonata\CoreBundle\Form\Type\BasePickerType
 
         // we override format so BasePickerType properly formats the time
         $options['format'] = $format;
+
+        $options['dp_format'] = $this->formatConverter->convert($options['format']);
 
         parent::finishView($view, $form, $options);
     }
