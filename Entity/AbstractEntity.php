@@ -15,7 +15,6 @@ use Gedmo\Mapping\Annotation as Gedmo;
 abstract class AbstractEntity
 {
     use ORMBehaviors\Timestampable\Timestampable;
-    use ORMBehaviors\SoftDeletable\SoftDeletable;
 
     /**
      * @var int
