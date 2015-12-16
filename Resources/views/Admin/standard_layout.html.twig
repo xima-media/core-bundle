@@ -2,11 +2,34 @@
 
 {% block stylesheets %}
     {% stylesheets '@XimaCoreBundle/Resources/public/css/Admin/style.css' filter='cssrewrite' %}
-        <link rel="stylesheet" href="{{ asset_url }}" />
+    <link rel="stylesheet" href="{{ asset_url }}"/>
     {% endstylesheets %}
     {{ parent() }}
 {% endblock %}
 
 {% block side_bar_after_nav %}
     <p id="version" class="text-center small"><a href="{{ path('release_notes') }}">v{{ version }}</a></p>
+{% endblock %}
+
+{% block sonata_top_nav_menu %}
+    <div class="navbar-right">
+        <ul class="nav navbar-nav">
+            {% block xima_top_nav_list %}
+                {% if app.user %}
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            <i class="fa fa-plus-square fa-fw"></i> <i class="fa fa-caret-down"></i>
+                        </a>
+                        {% include admin_pool.getTemplate('add_block') %}
+                    </li>
+                    <li>
+                        <a href="{{ path('sonata_user_admin_security_logout') }}"
+                           title="{{ 'user_block_logout'|trans({}, 'SonataUserBundle') }} {{ app.user }}">
+                            <i class="fa fa-sign-out"></i>
+                        </a>
+                    </li>
+                {% endif %}
+            {% endblock %}
+        </ul>
+    </div>
 {% endblock %}
