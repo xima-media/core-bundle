@@ -14,7 +14,7 @@ class CronTasksRunCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-        ->setName('crontasks:run')
+        ->setName('xima:crontasks:run')
         ->setDescription('Runs Cron Tasks if needed')
         ;
     }
