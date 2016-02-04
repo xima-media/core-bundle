@@ -7,7 +7,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="sys_cron_task")
+ * @ORM\Table(name="xima_cron_task")
  * @UniqueEntity("name")
  */
 class CronTask
