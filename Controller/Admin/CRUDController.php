@@ -2,6 +2,8 @@
 
 namespace Xima\CoreBundle\Controller\Admin;
 
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+
 class CRUDController extends \Sonata\AdminBundle\Controller\CRUDController
 {
     /**
@@ -67,7 +69,7 @@ class CRUDController extends \Sonata\AdminBundle\Controller\CRUDController
 
             try {
                 if (method_exists($this->admin, 'undelete')) {
-                    $this->admin->undelete();
+                    $this->admin->undelete($object);
                 } elseif (method_exists($object, 'undelete')) {
                     $object->undelete();
                 }
@@ -84,7 +86,8 @@ class CRUDController extends \Sonata\AdminBundle\Controller\CRUDController
                     'sonata_flash_success',
                     $this->admin->trans(
                         'flash_undelete_success',
-                        array('%name%' => $this->escapeHtml($this->admin->toString($object)))
+                        array('%name%' => $this->escapeHtml($this->admin->toString($object))),
+                        'XimaCoreBundle'
                     )
                 );
             } catch (ModelManagerException $e) {
@@ -96,7 +99,8 @@ class CRUDController extends \Sonata\AdminBundle\Controller\CRUDController
                     'sonata_flash_error',
                     $this->admin->trans(
                         'flash_undelete_error',
-                        array('%name%' => $this->escapeHtml($this->admin->toString($object)))
+                        array('%name%' => $this->escapeHtml($this->admin->toString($object))),
+                        'XimaCoreBundle'
                     )
                 );
             }
