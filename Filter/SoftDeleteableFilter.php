@@ -19,29 +19,13 @@ use Xima\CoreBundle\Helper\Util;
  */
 class SoftDeleteableFilter extends SQLFilter
 {
-    protected $entityManager;
-
     public function addFilterConstraint(ClassMetadata $targetEntity, $targetTableAlias)
     {
-        $addCondSql = '';
+        $constraint = '';
         if (in_array('Knp\DoctrineBehaviors\Model\SoftDeletable\SoftDeletable', Util::classUsesDeep($targetEntity->getName()))) {
-            $conn = $this->getEntityManager()->getConnection();
-            $platform = $conn->getDatabasePlatform();
-            $column = $targetEntity->getQuotedColumnName('deletedAt', $platform);
-            $addCondSql = $platform->getIsNullExpression($targetTableAlias.'.'.$column);
+            $constraint = $targetTableAlias . '.deletedAt is null';
         }
 
-        return $addCondSql;
-    }
-
-    protected function getEntityManager()
-    {
-        if ($this->entityManager === null) {
-            $refl = new \ReflectionProperty('Doctrine\ORM\Query\Filter\SQLFilter', 'em');
-            $refl->setAccessible(true);
-            $this->entityManager = $refl->getValue($this);
-        }
-
-        return $this->entityManager;
+        return $constraint;
     }
 }
