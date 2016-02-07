@@ -12,7 +12,6 @@ use Doctrine\DBAL\Migrations\Configuration\Configuration;
 class DefaultController extends Controller
 {
     /**
-     * @Route("/release-notes")
      * @Template()
      */
     public function releaseNotesAction()

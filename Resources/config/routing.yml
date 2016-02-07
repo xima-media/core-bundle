@@ -1,0 +1,6 @@
+sonata_admin_dashboard:
+     pattern:  /admin/dashboard
+     defaults: { _controller: XimaCoreBundle:Admin\Core:dashboard }
+xima_core.release_notes:
+    pattern:  /release-notes
+    defaults: { _controller: XimaCoreBundle:Default:releaseNotes }
