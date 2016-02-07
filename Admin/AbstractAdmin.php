@@ -10,4 +10,12 @@ class AbstractAdmin extends Admin
     {
         $collection->add('undelete', '{id}/undelete');
     }
+
+    /**
+     * @return boolean is current user super admin
+     */
+    protected function isSuperAdmin()
+    {
+        return $this->getConfigurationPool()->getContainer()->get('security.context')->isGranted('ROLE_SUPER_ADMIN');
+    }
 }
