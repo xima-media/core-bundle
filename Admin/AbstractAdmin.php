@@ -14,7 +14,7 @@ class AbstractAdmin extends Admin
     /**
      * @return boolean is current user super admin
      */
-    protected function isSuperAdmin()
+    public function isSuperAdmin()
     {
         return $this->getConfigurationPool()->getContainer()->get('security.context')->isGranted('ROLE_SUPER_ADMIN');
     }

@@ -7,11 +7,18 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class CRUDController extends \Sonata\AdminBundle\Controller\CRUDController
 {
     /**
+     * The related Admin class.
+     *
+     * @var \Xima\CoreBundle\Admin\AbstractAdmin
+     */
+    protected $admin;
+
+    /**
      * {@inheritDoc} Also allows editing of an object even if it is marked as delete.
      */
     public function editAction($id = null)
     {
-        if ($this->isSuperAdmin()) {
+        if ($this->admin->isSuperAdmin()) {
             $this->get('doctrine')->getManager()->getFilters()->disable('soft_deleteable');
         }
 
@@ -30,7 +37,7 @@ class CRUDController extends \Sonata\AdminBundle\Controller\CRUDController
      */
     public function listAction()
     {
-        if ($this->isSuperAdmin()) {
+        if ($this->admin->isSuperAdmin()) {
             $this->get('doctrine')->getManager()->getFilters()->disable('soft_deleteable');
         }
 
@@ -50,7 +57,7 @@ class CRUDController extends \Sonata\AdminBundle\Controller\CRUDController
      */
     public function undeleteAction($id)
     {
-        if (!$this->isSuperAdmin()) {
+        if ($this->admin->isSuperAdmin()) {
             throw new AccessDeniedException();
         }
 
@@ -113,13 +120,5 @@ class CRUDController extends \Sonata\AdminBundle\Controller\CRUDController
             'action' => 'delete',
             'csrf_token' => $this->getCsrfToken('sonata.undelete'),
         ));
-    }
-
-    /**
-     * @return bool is current user super admin
-     */
-    protected function isSuperAdmin()
-    {
-        return $this->get('security.context')->isGranted('ROLE_SUPER_ADMIN');
     }
 }
