@@ -2,7 +2,10 @@
 
 namespace Xima\CoreBundle\Controller\Admin;
 
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+
 
 class CRUDController extends \Sonata\AdminBundle\Controller\CRUDController
 {
@@ -19,7 +22,12 @@ class CRUDController extends \Sonata\AdminBundle\Controller\CRUDController
     public function editAction($id = null)
     {
         if ($this->admin->isSuperAdmin()) {
-            $this->get('doctrine')->getManager()->getFilters()->disable('soft_deleteable');
+            $em = $this->get('doctrine')->getManager();
+            /* @var $em EntityManagerInterface */
+
+            if ($em->getFilters()->isEnabled('softdeleteable')) {
+                $em->getFilters()->disable('softdeleteable');
+            }
         }
 
         $id = $this->get('request')->get($this->admin->getIdParameter());
@@ -38,7 +46,12 @@ class CRUDController extends \Sonata\AdminBundle\Controller\CRUDController
     public function listAction()
     {
         if ($this->admin->isSuperAdmin()) {
-            $this->get('doctrine')->getManager()->getFilters()->disable('soft_deleteable');
+            $em = $this->get('doctrine')->getManager();
+            /* @var $em EntityManagerInterface */
+
+            if ($em->getFilters()->isEnabled('softdeleteable')) {
+                $em->getFilters()->disable('softdeleteable');
+            }
         }
 
         return parent::listAction();
@@ -57,11 +70,16 @@ class CRUDController extends \Sonata\AdminBundle\Controller\CRUDController
      */
     public function undeleteAction($id)
     {
-        if ($this->admin->isSuperAdmin()) {
+        if (!$this->admin->isSuperAdmin()) {
             throw new AccessDeniedException();
         }
 
-        $this->get('doctrine')->getManager()->getFilters()->disable('soft_deleteable');
+        $em = $this->get('doctrine')->getManager();
+        /* @var $em EntityManagerInterface */
+
+        if ($em->getFilters()->isEnabled('softdeleteable')) {
+            $em->getFilters()->disable('softdeleteable');
+        }
 
         $id = $this->get('request')->get($this->admin->getIdParameter());
         $object = $this->admin->getObject($id);

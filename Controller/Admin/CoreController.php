@@ -8,7 +8,7 @@ class CoreController extends \Sonata\AdminBundle\Controller\CoreController
     public function dashboardAction()
     {
         if ($this->isSuperAdmin()) {
-            $this->get('doctrine')->getManager()->getFilters()->disable('soft_deleteable');
+            $this->get('doctrine')->getManager()->getFilters()->disable('softdeleteable');
         }
 
         return parent::dashboardAction();
