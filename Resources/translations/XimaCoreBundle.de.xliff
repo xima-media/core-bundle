@@ -32,7 +32,7 @@
             </trans-unit>
             <trans-unit id="flash_movetotrash_error">
                 <source>flash_movetotrash_error</source>
-                <targetBeim Verschieben in der Papierkorb des Elements "%name%" ist ein Fehler aufgetreten.</target>
+                <target>Beim Verschieben in der Papierkorb des Elements "%name%" ist ein Fehler aufgetreten.</target>
             </trans-unit>
             <trans-unit id="action_movetotrash">
                 <source>action_movetotrash</source>
