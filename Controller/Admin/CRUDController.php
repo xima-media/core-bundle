@@ -5,6 +5,7 @@ namespace Xima\CoreBundle\Controller\Admin;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 
 class CRUDController extends \Sonata\AdminBundle\Controller\CRUDController
