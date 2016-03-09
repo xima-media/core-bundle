@@ -70,10 +70,6 @@ class CRUDController extends \Sonata\AdminBundle\Controller\CRUDController
      */
     public function undeleteAction($id)
     {
-        if (!$this->admin->isSuperAdmin()) {
-            throw new AccessDeniedException();
-        }
-
         $em = $this->get('doctrine')->getManager();
         /* @var $em EntityManagerInterface */
 
@@ -130,7 +126,7 @@ class CRUDController extends \Sonata\AdminBundle\Controller\CRUDController
                 );
             }
 
-            return $this->redirectTo($object);
+            return new RedirectResponse($this->admin->generateUrl('list'));
         }
 
         return $this->render('XimaCoreBundle:Admin:undelete.html.twig', array(
