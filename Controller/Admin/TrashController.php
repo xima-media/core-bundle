@@ -91,7 +91,7 @@ class TrashController extends CRUDController {
             ));
         }
 
-        return $this->render($this->admin->getTemplate('delete'), array(
+        return $this->render('XimaCoreBundle:Admin:delete.html.twig', array(
             'object'     => $object,
             'action'     => 'delete',
             'csrf_token' => $this->getCsrfToken('sonata.delete'),

@@ -26,6 +26,30 @@
                  <source>btn_undelete</source>
                  <target>Wiederherstellen</target>
             </trans-unit>
+            <trans-unit id="flash_movetotrash_success">
+                <source>flash_movetotrash_success</source>
+                <target>Element "%name%" wurde erfolgreich in den Papierkorb verschoben.</target>
+            </trans-unit>
+            <trans-unit id="flash_movetotrash_error">
+                <source>flash_movetotrash_error</source>
+                <targetBeim Verschieben in der Papierkorb des Elements "%name%" ist ein Fehler aufgetreten.</target>
+            </trans-unit>
+            <trans-unit id="action_movetotrash">
+                <source>action_movetotrash</source>
+                <target>In den Papierkorb verschieben</target>
+            </trans-unit>
+            <trans-unit id="title_movetotrash">
+                <source>title_movetotrash</source>
+                <target>Papierkorb</target>
+            </trans-unit>
+            <trans-unit id="message_movetotrash_confirmation">
+                <source>message_movetotrash_confirmation</source>
+                <target>Sind Sie sicher, dass Sie das Element "%object%" in den Papierkorb verschieben wollen?</target>
+            </trans-unit>
+            <trans-unit id="btn_movetotrash">
+                 <source>btn_movetotrash</source>
+                 <target>In den Papierkorb verschieben</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

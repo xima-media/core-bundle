@@ -26,6 +26,30 @@
                  <source>btn_undelete</source>
                  <target>Undelete</target>
             </trans-unit>
+            <trans-unit id="flash_movetotrash_success">
+                <source>flash_movetotrash_success</source>
+                <target>Item "%name%" has been moved successfully to trash.</target>
+            </trans-unit>
+            <trans-unit id="flash_movetotrash_error">
+                <source>flash_movetotrash_error</source>
+                <target>An Error has occurred during move of item "%name%".</target>
+            </trans-unit>
+            <trans-unit id="action_movetotrash">
+                <source>action_movetotrash</source>
+                <target>Move to trash</target>
+            </trans-unit>
+            <trans-unit id="title_movetotrash">
+                <source>title_movetotrash</source>
+                <target>Trash</target>
+            </trans-unit>
+            <trans-unit id="message_movetotrash_confirmation">
+                <source>message_movetotrash_confirmation</source>
+                <target>Are you sure you want to move the selected "%object%" element to trash?</target>
+            </trans-unit>
+            <trans-unit id="btn_movetotrash">
+                 <source>btn_movetotrash</source>
+                 <target>Move to trash</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
