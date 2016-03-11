@@ -57,8 +57,12 @@ class TrashAdmin extends AbstractAdmin {
             ->add('title', 'html', array(
                 'truncate' => array(
                     'length' => 30
-                )))
-            ->add('username')
+                )));
+        if (parent::isSuperAdmin()) {
+            $listMapper
+                ->add('username');
+        }
+        $listMapper
             ->add('bookingType')
             ->add('deletedAt', null, array('format' => 'j M Y, g:i a'))
             ->add('_action', 'actions',
