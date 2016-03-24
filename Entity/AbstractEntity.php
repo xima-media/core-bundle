@@ -33,14 +33,6 @@ abstract class AbstractEntity
     protected $isActive = true;
 
     /**
-     * @var int
-     *
-     * @Gedmo\SortablePosition
-     * @ORM\Column(name="position", type="integer", nullable=true)
-     */
-    protected $position;
-
-    /**
      * Set id.
      *
      * @param int $id
@@ -88,27 +80,4 @@ abstract class AbstractEntity
         return $this->isActive;
     }
 
-    /**
-     * Set position.
-     *
-     * @param int $position
-     *
-     * @return Entity
-     */
-    public function setPosition($position)
-    {
-        $this->position = $position;
-
-        return $this;
-    }
-
-    /**
-     * Get position.
-     *
-     * @return int
-     */
-    public function getPosition()
-    {
-        return $this->position;
-    }
 }
