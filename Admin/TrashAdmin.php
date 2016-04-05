@@ -54,10 +54,7 @@ class TrashAdmin extends AbstractAdmin {
             ->getEntityManager();
 
         $listMapper
-            ->add('title', 'html', array(
-                'truncate' => array(
-                    'length' => 30
-                )));
+            ->addIdentifier('title');
         if (parent::isSuperAdmin()) {
             $listMapper
                 ->add('username');
