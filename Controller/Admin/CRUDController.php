@@ -3,6 +3,7 @@
 namespace Xima\CoreBundle\Controller\Admin;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Validator\ConstraintValidatorFactory;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -85,34 +86,51 @@ class CRUDController extends \Sonata\AdminBundle\Controller\CRUDController
             throw new NotFoundHttpException(sprintf('unable to find the object with id : %s', $id));
         }
 
+        if (false === $this->admin->isGranted('EDIT', $object)) {
+            throw new AccessDeniedException();
+        }
+
+        $this->admin->setSubject($object);
+
         if ($this->getRestMethod() == 'UNDELETE') {
             // check the csrf token
             $this->validateCsrfToken('sonata.undelete');
 
-            try {
-                if (method_exists($this->admin, 'undelete')) {
-                    $this->admin->undelete($object);
-                } elseif (method_exists($object, 'undelete')) {
-                    $object->undelete();
+            $countErrors = count($this->container->get('validator')->validate($object));
+
+            // persist if there are no validation errors
+            if (empty($countErrors)) {
+                try {
+                    if (method_exists($this->admin, 'undelete')) {
+                        $this->admin->undelete($object);
+                    } elseif (method_exists($object, 'undelete')) {
+                        $object->undelete();
+                    }
+
+                    $em = $this->get('doctrine')->getEntityManager();
+                    $em->persist($object);
+                    $em->flush();
+
+                    if ($this->isXmlHttpRequest()) {
+                        return $this->renderJson(array('result' => 'ok'));
+                    }
+
+                    $this->addFlash(
+                        'sonata_flash_success',
+                        $this->admin->trans(
+                            'flash_undelete_success',
+                            array('%name%' => $this->escapeHtml($this->admin->toString($object))),
+                            'XimaCoreBundle'
+                        )
+                    );
+
+                } catch (ModelManagerException $e) {
+                    $countErrors = 1;
                 }
+            }
 
-                $em = $this->get('doctrine')->getEntityManager();
-                $em->persist($object);
-                $em->flush();
+            if (!empty($countErrors)) {
 
-                if ($this->isXmlHttpRequest()) {
-                    return $this->renderJson(array('result' => 'ok'));
-                }
-
-                $this->addFlash(
-                    'sonata_flash_success',
-                    $this->admin->trans(
-                        'flash_undelete_success',
-                        array('%name%' => $this->escapeHtml($this->admin->toString($object))),
-                        'XimaCoreBundle'
-                    )
-                );
-            } catch (ModelManagerException $e) {
                 if ($this->isXmlHttpRequest()) {
                     return $this->renderJson(array('result' => 'error'));
                 }
