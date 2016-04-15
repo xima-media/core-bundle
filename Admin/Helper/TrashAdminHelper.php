@@ -7,8 +7,9 @@ use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
 use Xima\CoreBundle\Admin\AbstractAdmin;
 
-class TrashAdminHelper {
-    
+class TrashAdminHelper
+{
+
     public static function filterQuery($query)
     {
         $query->where($query->getRootAlias() . '.deletedAt IS NOT NULL');
@@ -36,5 +37,20 @@ class TrashAdminHelper {
         $collection->remove('show');
         $collection->remove('create');
         $collection->add('undelete', '{id}/undelete');
+    }
+
+    public static function getBatchActions(AbstractAdmin $admin)
+    {
+        $actions = array();
+
+        // check user permissions
+        if ($admin->hasRoute('delete') && $admin->isGranted('DELETE')) {
+            $actions['undelete'] = [
+                'label' => $admin->trans('action_undelete', array(), 'XimaCoreBundle'),
+                'ask_confirmation' => true // If true, a confirmation will be asked before performing the action
+            ];
+        }
+
+        return $actions;
     }
 }

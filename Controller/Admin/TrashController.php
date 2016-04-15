@@ -8,11 +8,23 @@ use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Sonata\AdminBundle\Exception\ModelManagerException;
 
-class TrashController extends CRUDController {
+class TrashController extends CRUDController
+{
+
+    public function editAction($id = null)
+    {
+        $em = $this->get('doctrine')->getManager();
+
+        if ($em->getFilters()->isEnabled('softdeleteable')) {
+            $em->getFilters()->disable('softdeleteable');
+        }
+
+        return parent::editAction($id);
+    }
 
     public function deleteAction($id)
     {
-        $id     = $this->get('request')->get($this->admin->getIdParameter());
+        $id = $this->get('request')->get($this->admin->getIdParameter());
         $object = $this->admin->getObject($id);
 
         if (!$object) {
@@ -50,6 +62,10 @@ class TrashController extends CRUDController {
                 // remove the entity
                 $em->remove($object);
                 $em->flush();
+
+                if (method_exists($this->admin, 'postFlush')) {
+                    $this->admin->postFlush();
+                }
 
                 // re-add the removed listener back to the event-manager
                 foreach ($originalEventListeners as $eventName => $listener) {
@@ -92,8 +108,8 @@ class TrashController extends CRUDController {
         }
 
         return $this->render('XimaCoreBundle:Admin:delete.html.twig', array(
-            'object'     => $object,
-            'action'     => 'delete',
+            'object' => $object,
+            'action' => 'delete',
             'csrf_token' => $this->getCsrfToken('sonata.delete'),
         ));
     }
@@ -150,6 +166,10 @@ class TrashController extends CRUDController {
                     $em->persist($object);
                     $em->flush();
 
+                    if (method_exists($this->admin, 'postFlush')) {
+                        $this->admin->postFlush();
+                    }
+
                     if ($this->isXmlHttpRequest()) {
                         return $this->renderJson(array('result' => 'ok'));
                     }
@@ -177,7 +197,7 @@ class TrashController extends CRUDController {
                     return $this->renderJson(array('result' => 'error'));
                 }
 
-                foreach ($constraintList as $constraint){
+                foreach ($constraintList as $constraint) {
                     /* @var $constraint \Symfony\Component\Validator\ConstraintViolationInterface */
                     $this->addFlash(
                         'sonata_flash_error',
@@ -200,49 +220,90 @@ class TrashController extends CRUDController {
         ));
     }
 
-    public function batchActionDelete(ProxyQueryInterface $query)
+    public function batchActionUndelete(ProxyQueryInterface $selectedModelQuery)
     {
         if (false === $this->admin->isGranted('DELETE')) {
             throw new AccessDeniedException();
         }
 
-        $modelManager = $this->admin->getModelManager();
+        $em = $this->get('doctrine')->getManager();
+
+        if ($em->getFilters()->isEnabled('softdeleteable')) {
+            $em->getFilters()->disable('softdeleteable');
+        }
+
+        // https://sonata-project.org/bundles/admin/2-0/doc/reference/batch_actions.html
+//        $request = $this->get('request');
+//        $modelManager = $this->admin->getModelManager();
+//        $target = $modelManager->find($this->admin->getClass(), $request->get('targetId'));
+//
+//        if ($target === null) {
+//            $this->addFlash('sonata_flash_info', 'flash_batch_undelete_error1');
+//
+//            return new RedirectResponse($this->admin->generateUrl('list', array('filter' => $this->admin->getFilterParameters())));
+//        }
+
+        $selectedModels = $selectedModelQuery->execute();
+
         try {
-            $em = $this->getDoctrine()->getManager();
+            foreach ($selectedModels as $selectedModel) {
 
-            // initiate an array for the removed listeners
-            $originalEventListeners = array();
+                $countErrors = count($this->container->get('validator')->validate($selectedModel));
 
-            // cycle through all registered event listeners
-            foreach ($em->getEventManager()->getListeners() as $eventName => $listeners) {
-                foreach ($listeners as $listener) {
-                    if ($listener instanceof \Knp\DoctrineBehaviors\ORM\SoftDeletable\SoftDeletableSubscriber) {
+                // persist if there are no validation errors
+                if (empty($countErrors)) {
+                    try {
+                        if (method_exists($this->admin, 'undelete')) {
+                            $this->admin->undelete($selectedModel);
+                        } elseif (method_exists($selectedModel, 'undelete')) {
+                            $selectedModel->undelete();
+                        }
 
-                        // store the event listener, that gets removed
-                        $originalEventListeners[$eventName] = $listener;
+                        $em->persist($selectedModel);
 
-                        // remove the SoftDeletableSubscriber event listener
-                        $em->getEventManager()->removeEventListener($eventName, $listener);
+                        if (method_exists($this->admin, 'postFlush')) {
+                            $this->admin->postFlush();
+                        }
+
+                        $this->addFlash(
+                            'sonata_flash_success',
+                            $this->admin->trans(
+                                'flash_undelete_success',
+                                array('%name%' => $this->escapeHtml($this->admin->toString($selectedModel))),
+                                'XimaCoreBundle'
+                            )
+                        );
+
+                    } catch (ModelManagerException $e) {
+                        $countErrors = 1;
+                        $this->logModelManagerException($e);
                     }
+                } else {
+                    $this->addFlash(
+                        'sonata_flash_success',
+                        $this->admin->trans(
+                            'flash_undelete_error',
+                            array('%name%' => $this->escapeHtml($this->admin->toString($selectedModel))),
+                            'XimaCoreBundle'
+                        )
+                    );
+                    $countErrors = 1;
                 }
             }
 
-            // remove the entity
-            $modelManager->batchDelete($this->admin->getClass(), $query);
-            // re-add the removed listener back to the event-manager
-            foreach ($originalEventListeners as $eventName => $listener) {
-                $em->getEventManager()->addEventListener($eventName, $listener);
-            }
-            $this->addFlash('sonata_flash_success', 'flash_batch_delete_success');
-        } catch (ModelManagerException $e) {
-            $this->logModelManagerException($e);
-            $this->addFlash('sonata_flash_error', 'flash_batch_delete_error');
+        } catch (\Exception $e) {
+            $this->addFlash('sonata_flash_error', 'flash_batch_undelete_error2');
+
+            return new RedirectResponse($this->admin->generateUrl('list', array('filter' => $this->admin->getFilterParameters())));
         }
 
-        return new RedirectResponse($this->admin->generateUrl(
-            'list',
-            array('filter' => $this->admin->getFilterParameters())
-        ));
+        if ($countErrors) {
+            $this->addFlash('sonata_flash_success', 'flash_batch_undelete_error3');
+        } else {
+            $this->addFlash('sonata_flash_success', 'flash_undelete_success');
+        }
+
+        return new RedirectResponse($this->admin->generateUrl('list', array('filter' => $this->admin->getFilterParameters())));
     }
 
     private function logModelManagerException($e)

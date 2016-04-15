@@ -23,15 +23,6 @@ class CRUDController extends \Sonata\AdminBundle\Controller\CRUDController
      */
     public function editAction($id = null)
     {
-        if ($this->admin->isSuperAdmin()) {
-            $em = $this->get('doctrine')->getManager();
-            /* @var $em EntityManagerInterface */
-
-            if ($em->getFilters()->isEnabled('softdeleteable')) {
-                $em->getFilters()->disable('softdeleteable');
-            }
-        }
-
         $id = $this->get('request')->get($this->admin->getIdParameter());
         $object = $this->admin->getObject($id);
 
@@ -40,23 +31,6 @@ class CRUDController extends \Sonata\AdminBundle\Controller\CRUDController
         }
 
         return parent::editAction($id);
-    }
-
-    /**
-     * {@inheritDoc} Also lists objects even if the are marked as delete.
-     */
-    public function listAction()
-    {
-        if ($this->admin->isSuperAdmin()) {
-            $em = $this->get('doctrine')->getManager();
-            /* @var $em EntityManagerInterface */
-
-            if ($em->getFilters()->isEnabled('softdeleteable')) {
-                $em->getFilters()->disable('softdeleteable');
-            }
-        }
-
-        return parent::listAction();
     }
 
     /**
@@ -121,8 +95,8 @@ class CRUDController extends \Sonata\AdminBundle\Controller\CRUDController
         }
 
         return $this->render('XimaCoreBundle:Admin:movetotrash.html.twig', array(
-            'object'     => $object,
-            'action'     => 'delete',
+            'object' => $object,
+            'action' => 'delete',
             'csrf_token' => $this->getCsrfToken('sonata.delete'),
         ));
     }
