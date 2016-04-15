@@ -1,28 +1,23 @@
 <?php
 
-namespace Xima\CoreBundle\Admin;
+namespace Xima\CoreBundle\Admin\Helper;
 
-use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
-use Sonata\AdminBundle\Form\FormMapper;
+use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Route\RouteCollection;
-use Symfony\Component\Routing\Router;
-use Xima\XRBSBundle\Security\AccessManager;
+use Xima\CoreBundle\Admin\AbstractAdmin;
 
-class TrashAdmin extends AbstractAdmin {
-
-    protected $baseRouteName = 'trash';
-    protected $baseRoutePattern = 'trash';
-
-    public function createQuery($context = 'list')
+class TrashAdminHelper {
+    
+    public static function createQuery($context = 'list', AbstractAdmin $admin)
     {
-        $query = parent::createQuery($context);
+        $query = $admin->createQuery($context);
         // this is the queryproxy, you can call anything you could call on the doctrine orm QueryBuilder
         $query->andWhere($query->getRootAlias() . '.deletedAt IS NOT NULL');
         if (!parent::isSuperAdmin()) {
             $query->andWhere($query->expr()
                 ->eq($query->getRootAlias() . '.username', ':username'));
-            $query->setParameter('username', $this->getConfigurationPool()
+            $query->setParameter('username', $admin->getConfigurationPool()
                 ->getContainer()
                 ->get('security.context')
                 ->getToken()
@@ -33,7 +28,7 @@ class TrashAdmin extends AbstractAdmin {
     }
 
     // Fields to be shown on filter forms
-    protected function configureDatagridFilters(DatagridMapper $datagridMapper)
+    public static function configureDatagridFilters(DatagridMapper $datagridMapper, AbstractAdmin $admin)
     {
         $datagridMapper
             ->add('title')
@@ -46,16 +41,11 @@ class TrashAdmin extends AbstractAdmin {
      *
      * @param ListMapper $listMapper
      */
-    protected function configureListFields(ListMapper $listMapper)
+    public static function configureListFields(ListMapper $listMapper, AbstractAdmin $admin)
     {
-        $em = $this->getConfigurationPool()
-            ->getContainer()
-            ->get('doctrine')
-            ->getEntityManager();
-
         $listMapper
             ->addIdentifier('title');
-        if (parent::isSuperAdmin()) {
+        if ($admin->isSuperAdmin()) {
             $listMapper
                 ->add('username');
         }
@@ -71,13 +61,11 @@ class TrashAdmin extends AbstractAdmin {
                 ));
     }
 
-    protected function configureRoutes(RouteCollection $collection)
+    public static function configureRoutes(RouteCollection $collection, AbstractAdmin $admin)
     {
         // to remove a single route
         $collection->remove('show');
         $collection->remove('create');
-
-        parent::configureRoutes($collection);
+        $collection->add('undelete', '{id}/undelete');
     }
-
 }

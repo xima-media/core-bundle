@@ -98,6 +98,102 @@ class TrashController extends CRUDController {
         ));
     }
 
+    /**
+     * Undelete action.
+     *
+     * @param int|string|null $id
+     * @todo translation not working
+     *
+     * @return Response|RedirectResponse
+     *
+     * @throws NotFoundHttpException If the object does not exist
+     * @throws AccessDeniedException If access is not granted
+     */
+    public function undeleteAction($id)
+    {
+        $em = $this->get('doctrine')->getManager();
+        /* @var $em EntityManagerInterface */
+
+        if ($em->getFilters()->isEnabled('softdeleteable')) {
+            $em->getFilters()->disable('softdeleteable');
+        }
+
+        $id = $this->get('request')->get($this->admin->getIdParameter());
+        $object = $this->admin->getObject($id);
+
+        if (!$object) {
+            throw new NotFoundHttpException(sprintf('unable to find the object with id : %s', $id));
+        }
+
+        if (false === $this->admin->isGranted('EDIT', $object)) {
+            throw new AccessDeniedException();
+        }
+
+        $this->admin->setSubject($object);
+
+        if ($this->getRestMethod() == 'UNDELETE') {
+            // check the csrf token
+            $this->validateCsrfToken('sonata.undelete');
+
+            $countErrors = count($this->container->get('validator')->validate($object));
+
+            // persist if there are no validation errors
+            if (empty($countErrors)) {
+                try {
+                    if (method_exists($this->admin, 'undelete')) {
+                        $this->admin->undelete($object);
+                    } elseif (method_exists($object, 'undelete')) {
+                        $object->undelete();
+                    }
+
+                    $em = $this->get('doctrine')->getEntityManager();
+                    $em->persist($object);
+                    $em->flush();
+
+                    if ($this->isXmlHttpRequest()) {
+                        return $this->renderJson(array('result' => 'ok'));
+                    }
+
+                    $this->addFlash(
+                        'sonata_flash_success',
+                        $this->admin->trans(
+                            'flash_undelete_success',
+                            array('%name%' => $this->escapeHtml($this->admin->toString($object))),
+                            'XimaCoreBundle'
+                        )
+                    );
+
+                } catch (ModelManagerException $e) {
+                    $countErrors = 1;
+                }
+            }
+
+            if (!empty($countErrors)) {
+
+                if ($this->isXmlHttpRequest()) {
+                    return $this->renderJson(array('result' => 'error'));
+                }
+
+                $this->addFlash(
+                    'sonata_flash_error',
+                    $this->admin->trans(
+                        'flash_undelete_error',
+                        array('%name%' => $this->escapeHtml($this->admin->toString($object))),
+                        'XimaCoreBundle'
+                    )
+                );
+            }
+
+            return new RedirectResponse($this->admin->generateUrl('list'));
+        }
+
+        return $this->render('XimaCoreBundle:Admin:undelete.html.twig', array(
+            'object' => $object,
+            'action' => 'delete',
+            'csrf_token' => $this->getCsrfToken('sonata.undelete'),
+        ));
+    }
+
     public function batchActionDelete(ProxyQueryInterface $query)
     {
         if (false === $this->admin->isGranted('DELETE')) {
