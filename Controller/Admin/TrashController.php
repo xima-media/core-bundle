@@ -170,21 +170,27 @@ class TrashController extends CRUDController {
 
             if (!empty($countErrors)) {
 
+                $constraintList = $this->container->get('validator')->validate($object);
+                /* @var $constraintList \Symfony\Component\Validator\ConstraintViolationList */
+
                 if ($this->isXmlHttpRequest()) {
                     return $this->renderJson(array('result' => 'error'));
                 }
 
-                $this->addFlash(
-                    'sonata_flash_error',
-                    $this->admin->trans(
-                        'flash_undelete_error',
-                        array('%name%' => $this->escapeHtml($this->admin->toString($object))),
-                        'XimaCoreBundle'
-                    )
-                );
+                foreach ($constraintList as $constraint){
+                    /* @var $constraint \Symfony\Component\Validator\ConstraintViolationInterface */
+                    $this->addFlash(
+                        'sonata_flash_error',
+                        $constraint->getMessage()
+                    );
+                }
             }
 
-            return new RedirectResponse($this->admin->generateUrl('list'));
+            // on validation errors: head directly to edit action
+            $parameters = array();
+            $parameters['id'] = $object->getId();
+
+            return new RedirectResponse($this->admin->generateUrl('edit', $parameters));
         }
 
         return $this->render('XimaCoreBundle:Admin:undelete.html.twig', array(
