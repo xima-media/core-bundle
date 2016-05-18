@@ -26,6 +26,8 @@ class TrashAdminHelper
             ->add('_action', 'actions',
                 array(
                     'actions' => array(
+                        'edit' => array('template' => 'SonataAdminBundle:CRUD:list__action_edit.html.twig'),
+                        'delete' => array('template' => 'SonataAdminBundle:CRUD:list__action_delete.html.twig'),
                         'undelete' => array('template' => 'XimaCoreBundle:Admin:list__action_undelete.html.twig'),
                     ),
                 ));
@@ -33,9 +35,9 @@ class TrashAdminHelper
 
     public static function configureRoutes(RouteCollection $collection, AbstractAdmin $admin)
     {
-        // to remove a single route
         $collection->remove('show');
         $collection->remove('create');
+        $collection->add('delete', '{id}/delete');
         $collection->add('undelete', '{id}/undelete');
     }
 

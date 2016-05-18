@@ -220,7 +220,13 @@ class TrashController extends CRUDController
         ));
     }
 
-    public function batchActionUndelete(ProxyQueryInterface $selectedModelQuery)
+    /**
+     * todo: share delete logic with that of deleteAction
+     *
+     * @param ProxyQueryInterface $query
+     * @return RedirectResponse
+     */
+    public function batchActionDelete(ProxyQueryInterface $query)
     {
         if (false === $this->admin->isGranted('DELETE')) {
             throw new AccessDeniedException();
@@ -232,16 +238,55 @@ class TrashController extends CRUDController
             $em->getFilters()->disable('softdeleteable');
         }
 
-        // https://sonata-project.org/bundles/admin/2-0/doc/reference/batch_actions.html
-//        $request = $this->get('request');
-//        $modelManager = $this->admin->getModelManager();
-//        $target = $modelManager->find($this->admin->getClass(), $request->get('targetId'));
-//
-//        if ($target === null) {
-//            $this->addFlash('sonata_flash_info', 'flash_batch_undelete_error1');
-//
-//            return new RedirectResponse($this->admin->generateUrl('list', array('filter' => $this->admin->getFilterParameters())));
-//        }
+        $modelManager = $this->admin->getModelManager();
+        try {
+
+            // initiate an array for the removed listeners
+            $originalEventListeners = array();
+
+            // cycle through all registered event listeners
+            foreach ($em->getEventManager()->getListeners() as $eventName => $listeners) {
+                foreach ($listeners as $listener) {
+                    if ($listener instanceof \Knp\DoctrineBehaviors\ORM\SoftDeletable\SoftDeletableSubscriber) {
+
+                        // store the event listener, that gets removed
+                        $originalEventListeners[$eventName] = $listener;
+
+                        // remove the SoftDeletableSubscriber event listener
+                        $em->getEventManager()->removeEventListener($eventName, $listener);
+                    }
+                }
+            }
+
+            // remove the entity
+            $modelManager->batchDelete($this->admin->getClass(), $query);
+            // re-add the removed listener back to the event-manager
+            foreach ($originalEventListeners as $eventName => $listener) {
+                $em->getEventManager()->addEventListener($eventName, $listener);
+            }
+            $this->addFlash('sonata_flash_success', 'flash_batch_delete_success');
+        } catch (ModelManagerException $e) {
+            $this->logModelManagerException($e);
+            $this->addFlash('sonata_flash_error', 'flash_batch_delete_error');
+        }
+
+        return new RedirectResponse($this->admin->generateUrl(
+            'list',
+            array('filter' => $this->admin->getFilterParameters())
+        ));
+    }
+
+    public function batchActionUndelete(ProxyQueryInterface $selectedModelQuery)
+    {
+        if (false === $this->admin->isGranted('DELETE')) {
+            throw new AccessDeniedException();
+        }
+
+        $em = $this->get('doctrine')->getManager();
+
+        if ($em->getFilters()->isEnabled('softdeleteable')) {
+            $em->getFilters()->disable('softdeleteable');
+        }
 
         $selectedModels = $selectedModelQuery->execute();
 
