@@ -1,9 +1,7 @@
 {% extends 'SonataAdminBundle::standard_layout.html.twig' %}
 
 {% block stylesheets %}
-    {% stylesheets '@XimaCoreBundle/Resources/public/css/Admin/style.css' filter='cssrewrite' %}
-    <link rel="stylesheet" href="{{ asset_url }}"/>
-    {% endstylesheets %}
+    <link href="{{ asset('bundles/ximacore/css/Admin/style.css') }}" rel="stylesheet" type="text/css" />
     {{ parent() }}
 {% endblock %}
 
