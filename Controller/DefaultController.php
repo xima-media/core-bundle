@@ -2,9 +2,9 @@
 
 namespace Xima\CoreBundle\Controller;
 
+use Michelf\MarkdownExtra;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use \Michelf\Markdown;
 
 class DefaultController extends Controller
 {
@@ -35,7 +35,7 @@ class DefaultController extends Controller
         $file = $this->get('kernel')->getRootDir() . '/../RELEASENOTES.md';
         if (is_readable($file)) {
             $mdReleaseNotes = file_get_contents($file);
-            $releaseNotes = Markdown::defaultTransform($mdReleaseNotes);
+            $releaseNotes = MarkdownExtra::defaultTransform($mdReleaseNotes);
         }
 
         return array(

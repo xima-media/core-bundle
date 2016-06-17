@@ -1,8 +1,10 @@
 {% extends 'XimaCoreBundle::Admin/standard_layout.html.twig' %}
 
 {% block content %}
-    <h3>Database version:</h3>
-    {{ dbVersion }}
-    <h3>Release notes:</h3>
-    {{ releaseNotes | raw }}
+    <div class="release-notes">
+        <h3>Database version:</h3>
+        {{ dbVersion }}
+        <h3>Release notes:</h3>
+        {{ releaseNotes | raw }}
+    </div>
 {% endblock %}
