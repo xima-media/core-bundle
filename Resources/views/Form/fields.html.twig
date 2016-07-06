@@ -19,6 +19,10 @@ file that was distributed with this source code.
             </div>
         </div>
         <script type="text/javascript">
+            moment.locale('en', {
+                week: { dow: 1 } // Monday is the first day of the week
+            });
+
             jQuery(function ($) {
                 $('#{{ id }}').datetimepicker({{ dp_options|json_encode|raw }});
             });
