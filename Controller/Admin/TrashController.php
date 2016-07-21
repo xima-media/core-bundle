@@ -2,6 +2,7 @@
 
 namespace Xima\CoreBundle\Controller\Admin;
 
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Xima\CoreBundle\Controller\Admin\CRUDController;
 use Sonata\AdminBundle\Datagrid\ProxyQueryInterface;
 use Symfony\Component\Finder\Exception\AccessDeniedException;
