@@ -1,3 +1,18 @@
+/* release notes */
+.release-notes th, .release-notes td {
+    border: 1px solid #CCC;
+    padding: 5px;
+}
+.release-notes thead tr {
+    background-color:#ccc;
+}
+.release-notes tbody tr:nth-child(odd) {
+    background-color:#eee;
+}
+.release-notes tbody tr:nth-child(even) {
+    background-color:#fff;
+}
+
 div.connection {
     height:250px;
 }
@@ -27,4 +42,20 @@ div.filter_container button[type=submit] {
 /* Links on top right in Admin layout should not overlap */
 .navbar li a {
     max-height:49px;
+}
+
+.custom-icon-recycle {
+    display: inline-block;
+    height: 12px;
+    width: 12px;
+    background-image: url(../../icons/recycle_grey.svg);
+    background-size: contain;
+    background-position: 0 1px;
+    background-repeat: no-repeat;
+}
+
+.custom-icon-recycle.confirm {
+    height: 14px;
+    width: 14px;
+    background-image: url(../../icons/recycle_white.svg);
 }

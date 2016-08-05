@@ -6,11 +6,6 @@ use Sonata\AdminBundle\Route\RouteCollection;
 
 class AbstractAdmin extends Admin
 {
-    protected function configureRoutes(RouteCollection $collection)
-    {
-        $collection->add('undelete', '{id}/undelete');
-    }
-
     /**
      * @return boolean is current user super admin
      */

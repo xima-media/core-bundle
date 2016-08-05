@@ -5,29 +5,21 @@
     "authors" : [{
             "name" : "Wolfram Eberius",
             "email" : "woe@xima.de"
-        },
-        {
-            "name" : "Matt Drollette",
-            "email" : "matt@drollette.com"
         }],
-    "keywords" : [
-        "symfony eventlistener"
-    ],
     "license" : [
         "MIT"
     ],
     "require": {
-        "php": ">=5.3.3",
-        "stof/doctrine-extensions-bundle": "^1.2.1"
+        "symfony/symfony": "*",
+        "doctrine/orm": "*",
+        "doctrine/migrations": "*",
+        "sensio/framework-extra-bundle": "*",
+        "stof/doctrine-extensions-bundle": "*",
+        "michelf/php-markdown": "*"
     },
     "autoload": {
         "psr-4": {
             "Xima\\CoreBundle\\": ""
-        }
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "v0.0.2"
         }
     }
 }

@@ -2,12 +2,9 @@
 
 namespace Xima\CoreBundle\Controller;
 
+use Michelf\MarkdownExtra;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use dflydev\markdown\MarkdownExtraParser;
-
-use Doctrine\DBAL\Migrations\Configuration\Configuration;
 
 class DefaultController extends Controller
 {
@@ -25,7 +22,7 @@ class DefaultController extends Controller
         if ($this->container->hasParameter('doctrine_migrations.dir_name')) {
             $dir = $this->container->getParameter('doctrine_migrations.dir_name');
             $connection = $this->get('doctrine')->getConnection();
-            $configuration = new Configuration($connection);
+            $configuration = new \Doctrine\DBAL\Migrations\Configuration\Configuration($connection);
             $configuration->setMigrationsNamespace($this->container->getParameter('doctrine_migrations.namespace'));
             $configuration->setMigrationsDirectory($dir);
             $configuration->setName($this->container->getParameter('doctrine_migrations.name'));
@@ -38,8 +35,7 @@ class DefaultController extends Controller
         $file = $this->get('kernel')->getRootDir() . '/../RELEASENOTES.md';
         if (is_readable($file)) {
             $mdReleaseNotes = file_get_contents($file);
-            $markdownParser = new MarkdownExtraParser();
-            $releaseNotes = $markdownParser->transformMarkdown($mdReleaseNotes);
+            $releaseNotes = MarkdownExtra::defaultTransform($mdReleaseNotes);
         }
 
         return array(
