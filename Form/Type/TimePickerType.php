@@ -51,6 +51,7 @@ class TimePickerType extends \Sonata\CoreBundle\Form\Type\BasePickerType
             'view_timezone' => null,
             'time_format' => $this->getDefaultFormat(),
             'dp_pick_date' => false,
+            'dp_min_date' => null
         )));
     }
 
