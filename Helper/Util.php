@@ -53,13 +53,14 @@ class Util
     }
 
     /**
-     * Get a GeoCode by an adress string.
+     * Get a GeoCode by an address string.
      *
-     * @param string $address
+     * @param string $addressString
+     * @param string $apiKey
      *
      * @return \Xima\CoreBundle\Model\GeoCode|bool
      */
-    public static function getGeoCode($addressString)
+    public static function getGeoCode($addressString, $apiKey)
     {
         $geoCode = new GeoCode();
 
@@ -67,7 +68,7 @@ class Util
         $addressString = urlencode($addressString);
 
         // google map geocode api url
-        $url = "http://maps.google.com/maps/api/geocode/json?sensor=false&address={$addressString}";
+        $url = "https://maps.google.com/maps/api/geocode/json?key=$apiKey&sensor=false&address={$addressString}";
         //echo $url . "\n";
 
         // get the json response
